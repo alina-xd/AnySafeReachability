@@ -52,14 +52,34 @@ import ruamel.yaml as yaml
 
 _HERE = pathlib.Path(__file__).resolve().parent
 _REPO = _HERE.parent
-# make the repo's packages and the scripts/ modules importable
-for p in (str(_REPO), str(_REPO / "dreamerv3_torch"), str(_REPO / "scripts")):
+# repo root (for `import dreamerv3_torch`) and scripts/ (for dreamer_offline)
+for p in (str(_REPO), str(_REPO / "scripts")):
     if p not in sys.path:
         sys.path.insert(0, p)
 
 import torch
-import tools
 from tqdm import trange
+
+# The world-model modules use package-relative imports (`from . import ...`), so
+# they must be loaded as `dreamerv3_torch.<mod>`. But scripts/dreamer_offline.py
+# imports them by bare name (`import models/tools/exploration`). Load them as
+# package submodules, then alias the bare names to the SAME module objects so
+# dreamer_offline resolves to them without re-importing (which would break the
+# relative imports and/or duplicate module state).
+from dreamerv3_torch import (
+    models as _models,
+    tools as tools,
+    networks as _networks,
+    exploration as _exploration,
+)
+
+for _name, _mod in (
+    ("models", _models),
+    ("tools", tools),
+    ("networks", _networks),
+    ("exploration", _exploration),
+):
+    sys.modules.setdefault(_name, _mod)
 
 import dubins_dataset  # local adapter (same folder)
 
