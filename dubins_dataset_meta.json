@@ -1,0 +1,26 @@
+{
+  "num_frames": 30007,
+  "num_episodes": 669,
+  "img_size": 64,
+  "v": 0.5,
+  "omega_max": 1.5,
+  "dt": 0.05,
+  "horizon": 120,
+  "workspace": [
+    -1.0,
+    1.0
+  ],
+  "r_obs": 0.5,
+  "sidewalk_y": 0.8,
+  "draw_obstacles": true,
+  "region_names": {
+    "0": "center_fail",
+    "1": "sidewalk_fail",
+    "2": "s1_upper_near_sidewalk",
+    "3": "s2_lower_near_sidewalk",
+    "4": "s3_upper_near_center",
+    "5": "s4_lower_near_center"
+  },
+  "action_space": "omega in [-omega_max, omega_max]",
+  "seed": 0
+}
